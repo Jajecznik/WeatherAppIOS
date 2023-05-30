@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ForecastListView: View {
     var forecast: ForecastList
-    var forecastEntries: [ForecastEntry] // dodano
+    var forecastEntries: [ForecastEntry]
     
     init(forecast: ForecastList) {
             self.forecast = forecast

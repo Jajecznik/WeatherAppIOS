@@ -30,6 +30,7 @@
 		22B002D52756862D009EF4A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22B002D42756862D009EF4A2 /* Preview Assets.xcassets */; };
 		22B002DC27568847009EF4A2 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B002DB27568847009EF4A2 /* LocationManager.swift */; };
 		923A489B2A25208400FD0BE8 /* WeatherSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923A489A2A25208400FD0BE8 /* WeatherSummaryView.swift */; };
+		923A489E2A2579C000FD0BE8 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 923A489D2A2579C000FD0BE8 /* SwiftUICharts */; };
 		92D2E12B2A1C5F190035311B /* Gliwice.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 92D2E12A2A1C5F190035311B /* Gliwice.gpx */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				923A489E2A2579C000FD0BE8 /* SwiftUICharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +187,9 @@
 			dependencies = (
 			);
 			name = WeatherApp;
+			packageProductDependencies = (
+				923A489D2A2579C000FD0BE8 /* SwiftUICharts */,
+			);
 			productName = WeatherApp;
 			productReference = 22B002CA2756862C009EF4A2 /* WeatherApp.app */;
 			productType = "com.apple.product-type.application";
@@ -213,6 +218,9 @@
 				Base,
 			);
 			mainGroup = 22B002C12756862C009EF4A2;
+			packageReferences = (
+				923A489C2A2579C000FD0BE8 /* XCRemoteSwiftPackageReference "ChartView" */,
+			);
 			productRefGroup = 22B002CB2756862C009EF4A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -473,6 +481,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		923A489C2A2579C000FD0BE8 /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		923A489D2A2579C000FD0BE8 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 923A489C2A2579C000FD0BE8 /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22B002C22756862C009EF4A2 /* Project object */;
 }

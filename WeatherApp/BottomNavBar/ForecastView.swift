@@ -54,7 +54,6 @@ struct ForecastView: View {
                     }
                     .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
                 ZStack {
-                    //Color(hue: 0.333, saturation: 1, brightness: 1)
                         VStack{
                         Button(action: {
                             showWeatherSummary = true
@@ -65,7 +64,7 @@ struct ForecastView: View {
                                 .padding()
                                 .background(Color(hue: 0.333, saturation: 1, brightness: 1))
                                 .cornerRadius(10)
-                        }
+                            }
                         }
                     }
                     .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
