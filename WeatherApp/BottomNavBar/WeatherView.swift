@@ -80,12 +80,12 @@ struct WeatherView: View {
                                 
                                 Spacer()
                                 if(sharedText.text == "no") {
-                                    Text(weather.main.temp.roundDouble() + temperatureUnitSymbol)
+                                    Text(currentTemperature)
                                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                                         .fontWeight(.bold)
                                         .padding()
                                 } else {
-                                    Text("\(viewModel.weather?.main.temp.roundDouble() ?? "0")" + temperatureUnitSymbol)
+                                    Text(currentTemperature)
                                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                                         .fontWeight(.bold)
                                         .padding()
@@ -116,14 +116,14 @@ struct WeatherView: View {
                                 HStack {
                                     if(sharedText.text == "no")
                                     {
-                                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + temperatureUnitSymbol))
+                                        WeatherRow(logo: "thermometer", name: "Min temp", value: minTemperature)
                                         Spacer()
-                                        WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + temperatureUnitSymbol))
+                                        WeatherRow(logo: "thermometer", name: "Max temp", value: maxTemperature)
                                     }
                                     else {
-                                        WeatherRow(logo: "thermometer", name: "Min temp", value: "\(viewModel.weather?.main.tempMin.roundDouble() ?? "0")" + temperatureUnitSymbol)
+                                        WeatherRow(logo: "thermometer", name: "Min temp", value: minTemperature)
                                         Spacer()
-                                        WeatherRow(logo: "thermometer", name: "Max temp", value: "\(viewModel.weather?.main.tempMax.roundDouble() ?? "0")" + temperatureUnitSymbol)
+                                        WeatherRow(logo: "thermometer", name: "Max temp", value: maxTemperature)
                                     }
                                 }
                                 
@@ -146,12 +146,12 @@ struct WeatherView: View {
                                     {
                                         WeatherRow(logo: "barometer", name: "Pressure", value: (weather.main.pressure.roundDouble() + " hPa"))
                                         Spacer()
-                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(weather.main.feelsLike.roundDouble())" + temperatureUnitSymbol)
+                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: feelsTemperature)
                                     }
                                     else {
                                         WeatherRow(logo: "barometer", name: "Pressure", value: "\(viewModel.weather?.main.pressure.roundDouble() ?? "0") hPa")
                                         Spacer()
-                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(viewModel.weather?.main.feelsLike.roundDouble() ?? "0")" + temperatureUnitSymbol)
+                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: feelsTemperature)
                                     }
                                 }
                                 
@@ -278,6 +278,40 @@ struct WeatherView: View {
                 return "°C"
             case .fahrenheit:
                 return "°F"
+            }
+        }
+    
+        private var currentTemperature: String {
+            let temperature = (sharedText.text == "no" ? weather.main.temp : viewModel.weather?.main.temp) ?? weather.main.temp
+            let convertedTemperature = convertTemperature(temperature)
+            return "\(convertedTemperature) \(temperatureUnitSymbol)"
+        }
+
+        private var minTemperature: String {
+            let temperature = (sharedText.text == "no" ? weather.main.tempMin : viewModel.weather?.main.tempMin) ?? weather.main.tempMin
+            let convertedTemperature = convertTemperature(temperature)
+            return "\(convertedTemperature) \(temperatureUnitSymbol)"
+        }
+
+        private var maxTemperature: String {
+            let temperature = (sharedText.text == "no" ? weather.main.tempMax : viewModel.weather?.main.tempMax) ?? weather.main.tempMax
+            let convertedTemperature = convertTemperature(temperature)
+            return "\(convertedTemperature) \(temperatureUnitSymbol)"
+        }
+
+        private var feelsTemperature: String {
+            let temperature = (sharedText.text == "no" ? weather.main.feelsLike : viewModel.weather?.main.feelsLike) ?? weather.main.feelsLike
+            let convertedTemperature = convertTemperature(temperature)
+            return "\(convertedTemperature) \(temperatureUnitSymbol)"
+        }
+
+        private func convertTemperature(_ temperature: Double) -> String {
+            switch temperatureSettings.temperatureUnit {
+            case .celsius:
+                return "\(temperature.roundDouble())"
+            case .fahrenheit:
+                let convertedTemperature = (temperature * 9/5) + 32
+                return "\(convertedTemperature.roundDouble())"
             }
         }
     

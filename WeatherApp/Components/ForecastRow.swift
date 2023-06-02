@@ -16,7 +16,7 @@ struct ForecastRow: View {
                         Text("max/min temp")
                             .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 30 : 15))
                         
-                        Text("\(element.main.tempMax.roundDouble())\(temperatureUnitSymbol) / \(element.main.tempMin.roundDouble())\(temperatureUnitSymbol)")
+                        Text("\(maxTemperature)/\(minTemperature)")
                             .bold()
                             .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 25))
                     }
@@ -37,6 +37,29 @@ struct ForecastRow: View {
             }.padding([.bottom], 15)
         }
     }
+    
+    private var minTemperature: String {
+        let temperature = element.main.temp_min
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+
+    private var maxTemperature: String {
+        let temperature = element.main.temp_max
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+    
+    private func convertTemperature(_ temperature: Double) -> String {
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return "\(temperature.roundDouble())"
+        case .fahrenheit:
+            let convertedTemperature = (temperature * 9/5) + 32
+            return "\(convertedTemperature.roundDouble())"
+        }
+    }
+    
     private var temperatureUnitSymbol: String {
             switch temperatureSettings.temperatureUnit {
             case .celsius:

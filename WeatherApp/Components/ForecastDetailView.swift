@@ -39,15 +39,15 @@ struct ForecastDetailView: View {
                 }
                 .frame(width: 150, alignment: .leading)
                 Spacer()
-                    Text(element.main.temp.roundDouble() + temperatureUnitSymbol)
+                    Text(currentTemperature)
                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                         .fontWeight(.bold)
                         .padding()
             }
             HStack{
-                WeatherRow(logo: "thermometer", name: "Min temp", value: (element.main.temp_min.roundDouble() + temperatureUnitSymbol))
+                WeatherRow(logo: "thermometer", name: "Min temp", value: minTemperature)
                 Spacer()
-                WeatherRow(logo: "thermometer", name: "Max temp", value: (element.main.temp_max.roundDouble() + temperatureUnitSymbol))
+                WeatherRow(logo: "thermometer", name: "Max temp", value: maxTemperature)
             }
             HStack {
                 WeatherRow(logo: "wind", name: "Wind speed", value: (element.wind.speed.roundDouble() + " m/s"))
@@ -57,7 +57,7 @@ struct ForecastDetailView: View {
             HStack {
                 WeatherRow(logo: "barometer", name: "Pressure", value: (element.main.pressure.roundDouble() + " hPa"))
                 Spacer()
-                WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(element.main.feelsLike.roundDouble())°")
+                WeatherRow(logo: "thermometer.sun", name: "Feels like", value: feelsTemperature)
             }
             HStack {
                 WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: ("\(element.clouds.all)%"))
@@ -67,14 +67,48 @@ struct ForecastDetailView: View {
         }
         .frame(maxWidth: UIDevice.current.userInterfaceIdiom == .pad ? .infinity : 400, alignment: .leading)
         .padding()
-        .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
-        .background(.white)
+        .foregroundColor(.black)
+        .background(Color(hue: 0.333, saturation: 1, brightness: 1))
         .cornerRadius(20)
         .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? 80 : 0)
         .navigationBarTitle("More Details")
         Spacer()
-        
     }
+    
+    private var currentTemperature: String {
+        let temperature = element.main.temp
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+
+    private var minTemperature: String {
+        let temperature = element.main.temp_min
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+
+    private var maxTemperature: String {
+        let temperature = element.main.temp_max
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+    
+    private var feelsTemperature: String {
+        let temperature = element.main.feelsLike
+        let convertedTemperature = convertTemperature(temperature)
+        return "\(convertedTemperature) \(temperatureUnitSymbol)"
+    }
+    
+    private func convertTemperature(_ temperature: Double) -> String {
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return "\(temperature.roundDouble())"
+        case .fahrenheit:
+            let convertedTemperature = (temperature * 9/5) + 32
+            return "\(convertedTemperature.roundDouble())"
+        }
+    }
+    
     private var temperatureUnitSymbol: String {
             switch temperatureSettings.temperatureUnit {
             case .celsius:
@@ -84,11 +118,3 @@ struct ForecastDetailView: View {
             }
         }
 }
-
-
-
-//struct ForecastDetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ForecastDetailView()
-//    }
-//}
