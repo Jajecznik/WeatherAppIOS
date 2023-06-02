@@ -95,36 +95,28 @@ struct WeatherView: View {
                             
                             VStack(alignment: .leading, spacing: 20) {
                                 HStack {
-                                    Button(action: {
-                                               toggleTemperatureUnit()
-                                           }) {
-                                               Text("C / F")
-                                                   .padding()
-                                                   .foregroundColor(.white)
-                                                   .background(Color.blue)
-                                                   .cornerRadius(10)
-                                           }
-                                           .padding()
+                                    Text("Weather now")
+                                        .bold()
+                                        .padding(.bottom)
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20))
                                     
                                     Spacer()
                                     
                                     Button(action: {
                                                toggleTemperatureUnit()
                                            }) {
-                                               Text("C / F")
+                                               Text(temperatureUnitSymbol)
                                                    .padding()
                                                    .foregroundColor(.white)
                                                    .background(Color.blue)
                                                    .cornerRadius(10)
                                            }
                                            .padding()
-                                    
-                                    Spacer()
                                     
                                     Button(action: {
                                                toggleSpeedUnit()
                                            }) {
-                                               Text("m/s / km/h")
+                                               Text(speedUnitSymbol)
                                                    .padding()
                                                    .foregroundColor(.white)
                                                    .background(Color.blue)
