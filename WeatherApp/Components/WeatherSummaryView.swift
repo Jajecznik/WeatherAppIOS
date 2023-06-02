@@ -45,9 +45,12 @@ struct BarChart: View {
                 HStack {
                     Text(dataPoint.label)
                         .frame(width: 80, alignment: .trailing)
+                        .foregroundColor(Color(hue: 0.333, saturation: 1, brightness: 1))
                     RoundedRectangle(cornerRadius: 8)
                         .fill(barColor)
                         .frame(height: CGFloat(dataPoint.value) * 2)
+                    Text("\(Int(dataPoint.value))")
+                        .foregroundColor(.white)
                 }
             }
         }

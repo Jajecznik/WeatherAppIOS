@@ -17,8 +17,9 @@ struct WeatherView: View {
     var weather: ResponseBody
     @EnvironmentObject var sharedText: SharedText
     @EnvironmentObject var locationManager: LocationManager
-    @EnvironmentObject var weatherViewModel: WeatherViewModel
-    @StateObject var viewModel = WeatherViewModel()
+    @EnvironmentObject var viewModel: WeatherViewModel
+    @EnvironmentObject var temperatureSettings: TemperatureSettings
+    //@StateObject var viewModel = WeatherViewModel()
     @State private var showAlert = false
     
     var body: some View {
@@ -40,7 +41,7 @@ struct WeatherView: View {
             "Tornado": ("Tornado", "tornado"),
         ]
 
-        let weatherCode = (sharedText.text == "no" ? weather.weather[0].main : weatherViewModel.weather?.weather[0].main) ?? weather.weather[0].main
+        let weatherCode = (sharedText.text == "no" ? weather.weather[0].main : viewModel.weather?.weather[0].main) ?? weather.weather[0].main
         let (weatherDescription, weatherIcon) = weatherDescriptions[weatherCode] ?? ("Nieznana", "questionmark")
         //NavigationView{
             ScrollView{
@@ -54,7 +55,7 @@ struct WeatherView: View {
                                 
                                     .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 70 : 40))
                             } else {
-                                Text(weatherViewModel.weather?.name ?? "")
+                                Text(viewModel.weather?.name ?? "")
                                     .bold()
                                     .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 70 : 40))
                             }
@@ -79,12 +80,12 @@ struct WeatherView: View {
                                 
                                 Spacer()
                                 if(sharedText.text == "no") {
-                                    Text(weather.main.temp.roundDouble() + "°")
+                                    Text(weather.main.temp.roundDouble() + temperatureUnitSymbol)
                                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                                         .fontWeight(.bold)
                                         .padding()
                                 } else {
-                                    Text("\(weatherViewModel.weather?.main.temp.roundDouble() ?? "0")°")
+                                    Text("\(viewModel.weather?.main.temp.roundDouble() ?? "0")" + temperatureUnitSymbol)
                                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                                         .fontWeight(.bold)
                                         .padding()
@@ -94,22 +95,35 @@ struct WeatherView: View {
                                 .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 40)
                             
                             VStack(alignment: .leading, spacing: 20) {
-                                Text("Weather now")
-                                    .bold()
-                                    .padding(.bottom)
-                                    .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20))
-                                
+                                HStack {
+                                    Text("Weather now")
+                                        .bold()
+                                        .padding(.bottom)
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20))
+                                    Spacer()
+                                    Button(action: {
+                                               toggleTemperatureUnit()
+                                           }) {
+                                               Text("Change Temperature Unit")
+                                                   .padding()
+                                                   .foregroundColor(.white)
+                                                   .background(Color.blue)
+                                                   .cornerRadius(10)
+                                           }
+                                           .padding()
+                                }
+                    
                                 HStack {
                                     if(sharedText.text == "no")
                                     {
-                                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + ("°")))
+                                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + temperatureUnitSymbol))
                                         Spacer()
-                                        WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
+                                        WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + temperatureUnitSymbol))
                                     }
                                     else {
-                                        WeatherRow(logo: "thermometer", name: "Min temp", value: "\(weatherViewModel.weather?.main.tempMin.roundDouble() ?? "0")°")
+                                        WeatherRow(logo: "thermometer", name: "Min temp", value: "\(viewModel.weather?.main.tempMin.roundDouble() ?? "0")" + temperatureUnitSymbol)
                                         Spacer()
-                                        WeatherRow(logo: "thermometer", name: "Max temp", value: "\(weatherViewModel.weather?.main.tempMax.roundDouble() ?? "0")°")
+                                        WeatherRow(logo: "thermometer", name: "Max temp", value: "\(viewModel.weather?.main.tempMax.roundDouble() ?? "0")" + temperatureUnitSymbol)
                                     }
                                 }
                                 
@@ -121,9 +135,9 @@ struct WeatherView: View {
                                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
                                     }
                                     else {
-                                        WeatherRow(logo: "wind", name: "Wind speed", value: "\(weatherViewModel.weather?.wind.speed.roundDouble() ?? "0") m/s")
+                                        WeatherRow(logo: "wind", name: "Wind speed", value: "\(viewModel.weather?.wind.speed.roundDouble() ?? "0") m/s")
                                         Spacer()
-                                        WeatherRow(logo: "humidity", name: "Humidity", value: "\(weatherViewModel.weather?.main.humidity.roundDouble() ?? "0")%")
+                                        WeatherRow(logo: "humidity", name: "Humidity", value: "\(viewModel.weather?.main.humidity.roundDouble() ?? "0")%")
                                     }
                                 }
                                 
@@ -132,12 +146,12 @@ struct WeatherView: View {
                                     {
                                         WeatherRow(logo: "barometer", name: "Pressure", value: (weather.main.pressure.roundDouble() + " hPa"))
                                         Spacer()
-                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(weather.main.feelsLike.roundDouble())°")
+                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(weather.main.feelsLike.roundDouble())" + temperatureUnitSymbol)
                                     }
                                     else {
-                                        WeatherRow(logo: "barometer", name: "Pressure", value: "\(weatherViewModel.weather?.main.pressure.roundDouble() ?? "0") hPa")
+                                        WeatherRow(logo: "barometer", name: "Pressure", value: "\(viewModel.weather?.main.pressure.roundDouble() ?? "0") hPa")
                                         Spacer()
-                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(weatherViewModel.weather?.main.feelsLike.roundDouble() ?? "0")°")
+                                        WeatherRow(logo: "thermometer.sun", name: "Feels like", value: "\(viewModel.weather?.main.feelsLike.roundDouble() ?? "0")" + temperatureUnitSymbol)
                                     }
                                 }
                                 
@@ -147,9 +161,9 @@ struct WeatherView: View {
                                         Spacer()
                                         WeatherRow(logo: "sunset", name: "Sunset", value: convertTimestamp(weather.sys.sunset))
                                     } else {
-                                        WeatherRow(logo: "sunrise", name: "Sunrise", value: convertTimestamp(weatherViewModel.weather?.sys.sunrise ?? 0))
+                                        WeatherRow(logo: "sunrise", name: "Sunrise", value: convertTimestamp(viewModel.weather?.sys.sunrise ?? 0))
                                         Spacer()
-                                        WeatherRow(logo: "sunset", name: "Sunset", value: convertTimestamp(weatherViewModel.weather?.sys.sunset ?? 0))
+                                        WeatherRow(logo: "sunset", name: "Sunset", value: convertTimestamp(viewModel.weather?.sys.sunset ?? 0))
                                     }
                                 }
                                 
@@ -161,9 +175,9 @@ struct WeatherView: View {
                                         WeatherRow(logo: "eye.fill", name: "Visibility", value: ("\(weather.visibility/1000) km"))
                                     }
                                     else {
-                                        WeatherRow(logo: "cloud.fill", name: "Chance of cloudiness", value: "\(weatherViewModel.weather?.clouds.all ?? 0)%")
+                                        WeatherRow(logo: "cloud.fill", name: "Chance of cloudiness", value: "\(viewModel.weather?.clouds.all ?? 0)%")
                                         Spacer()
-                                        WeatherRow(logo: "eye.fill", name: "Visibility", value: "\((weatherViewModel.weather?.visibility ?? 0) / 1000) km")
+                                        WeatherRow(logo: "eye.fill", name: "Visibility", value: "\((viewModel.weather?.visibility ?? 0) / 1000) km")
                                     }
                                 }
                                 
@@ -196,7 +210,7 @@ struct WeatherView: View {
                                 }
                                 
                                 Task {
-                                    await weatherViewModel.getWeatherForCoordinates(latitude: location.latitude, longitude: location.longitude)
+                                    await viewModel.getWeatherForCoordinates(latitude: location.latitude, longitude: location.longitude)
                                 }
                                 
                                 if let cityName = locationManager.cityName {
@@ -226,7 +240,7 @@ struct WeatherView: View {
                         print(locationManager.location ?? "xd")
                     } else {
                         print(sharedText.text+"viewmodel")
-                        await weatherViewModel.getWeatherForCity(city: sharedText.text)
+                        await viewModel.getWeatherForCity(city: sharedText.text)
                     }
                 }
             }
@@ -238,7 +252,7 @@ struct WeatherView: View {
                             print(locationManager.location ?? "xd")
                         } else {
                             print(sharedText.text+"ONRECEIVE")
-                            await weatherViewModel.getWeatherForCity(city: sharedText.text)
+                            await viewModel.getWeatherForCity(city: sharedText.text)
                         }
                     }
                     locationManager.locationUpdated = false
@@ -258,6 +272,22 @@ struct WeatherView: View {
             }
         }
     
+    private var temperatureUnitSymbol: String {
+            switch temperatureSettings.temperatureUnit {
+            case .celsius:
+                return "°C"
+            case .fahrenheit:
+                return "°F"
+            }
+        }
+    
+    func toggleTemperatureUnit() {
+            if temperatureSettings.temperatureUnit == .celsius {
+                temperatureSettings.temperatureUnit = .fahrenheit
+            } else {
+                temperatureSettings.temperatureUnit = .celsius
+            }
+        }
     
     func checkInternetConnection() {
         let monitor = NWPathMonitor()

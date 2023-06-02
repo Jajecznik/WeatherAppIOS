@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var selection = 1 // tabitem selection by default
     @StateObject private var sharedText = SharedText()
     @StateObject private var weatherViewModel = WeatherViewModel()
-    
+    @StateObject var temperatureSettings = TemperatureSettings()
 
     var body: some View {
         VStack {
@@ -22,6 +22,7 @@ struct ContentView: View {
                 if let weather = weather {
                     TabView(selection: $selection) {
                         ForecastView()
+                            .environmentObject(temperatureSettings)
                             .tabItem {
                                 Label("Forecast", systemImage: "calendar")
                             }
@@ -31,6 +32,7 @@ struct ContentView: View {
                             .environmentObject(sharedText)
                             .environmentObject(locationManager)
                             .environmentObject(weatherViewModel)
+                            .environmentObject(temperatureSettings)
                             .tabItem {
                                 Label("Weather", systemImage: "sun.max")
                             }

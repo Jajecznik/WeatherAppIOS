@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ForecastDetailView: View {
     var element: ForecastListElement
+    @EnvironmentObject var temperatureSettings: TemperatureSettings
+    
     var body: some View {
         
         let weatherDescriptions = [
@@ -37,15 +39,15 @@ struct ForecastDetailView: View {
                 }
                 .frame(width: 150, alignment: .leading)
                 Spacer()
-                    Text(element.main.temp.roundDouble() + "°")
+                    Text(element.main.temp.roundDouble() + temperatureUnitSymbol)
                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 140 : 80))
                         .fontWeight(.bold)
                         .padding()
             }
             HStack{
-                WeatherRow(logo: "thermometer", name: "Min temp", value: (element.main.temp_min.roundDouble() + ("°")))
+                WeatherRow(logo: "thermometer", name: "Min temp", value: (element.main.temp_min.roundDouble() + temperatureUnitSymbol))
                 Spacer()
-                WeatherRow(logo: "thermometer", name: "Max temp", value: (element.main.temp_max.roundDouble() + "°"))
+                WeatherRow(logo: "thermometer", name: "Max temp", value: (element.main.temp_max.roundDouble() + temperatureUnitSymbol))
             }
             HStack {
                 WeatherRow(logo: "wind", name: "Wind speed", value: (element.wind.speed.roundDouble() + " m/s"))
@@ -73,6 +75,14 @@ struct ForecastDetailView: View {
         Spacer()
         
     }
+    private var temperatureUnitSymbol: String {
+            switch temperatureSettings.temperatureUnit {
+            case .celsius:
+                return "°C"
+            case .fahrenheit:
+                return "°F"
+            }
+        }
 }
 
 

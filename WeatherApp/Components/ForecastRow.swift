@@ -3,6 +3,7 @@ import SwiftUI
 struct ForecastRow: View {
     var element: ForecastListElement
     var weekdayFormatter = WeekdayFormatter()
+    @EnvironmentObject var temperatureSettings: TemperatureSettings
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -15,7 +16,7 @@ struct ForecastRow: View {
                         Text("max/min temp")
                             .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 30 : 15))
                         
-                        Text("\(element.main.temp_max.roundDouble())° / \(element.main.temp_min.roundDouble())°")
+                        Text("\(element.main.tempMax.roundDouble())\(temperatureUnitSymbol) / \(element.main.tempMin.roundDouble())\(temperatureUnitSymbol)")
                             .bold()
                             .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 25))
                     }
@@ -36,4 +37,12 @@ struct ForecastRow: View {
             }.padding([.bottom], 15)
         }
     }
+    private var temperatureUnitSymbol: String {
+            switch temperatureSettings.temperatureUnit {
+            case .celsius:
+                return "°C"
+            case .fahrenheit:
+                return "°F"
+            }
+        }
 }

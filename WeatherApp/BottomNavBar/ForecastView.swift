@@ -14,6 +14,8 @@ struct ForecastView: View {
     @State var forecast: ForecastList?
     @State var isLoading = true;
     @State private var showWeatherSummary = false
+    @EnvironmentObject var temperatureSettings: TemperatureSettings
+    
     
     func loadWeatherForecast(location: CLLocationCoordinate2D) async {
     isLoading = true
@@ -39,73 +41,56 @@ struct ForecastView: View {
     }
     
     var body: some View {
-        //if (locationManager.location != nil && !locationManager.isLoading) {
         NavigationView {
             VStack {
-                //if(forecast != nil && !isLoading) {
-                    ZStack {
-                        Color(hue: 0.333, saturation: 1, brightness: 1)
-                        VStack{
+                ZStack {
+                    Color(hue: 0.333, saturation: 1, brightness: 1)
+                    VStack {
                         Text("\(forecast?.city.name ?? "")")
                             .bold()
                             .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 70 : 30))
                             .foregroundColor(Color.black)
-                        }
                     }
-                    .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
+                }
+                .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
+                
                 ZStack {
-                        VStack{
+                    VStack {
                         Button(action: {
                             showWeatherSummary = true
-                        }){
+                        }) {
                             Text("Temperature Graph")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .padding()
                                 .background(Color(hue: 0.333, saturation: 1, brightness: 1))
                                 .cornerRadius(10)
-                            }
                         }
                     }
-                    .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
-                if(forecast != nil && !isLoading) {
+                }
+                .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
+                
+                if forecast != nil && !isLoading {
                     ForecastListView(forecast: forecast!)
-                        //.navigationBarItems(trailing: Button(action: {
-                          //      showWeatherSummary = true
-                            //}){
-                              //  Image(systemName: "info.circle")
-                            //})
-                    //.sheet(isPresented: $showWeatherSummary) {
-                      //  WeatherSummaryView(forecastEntries: forecastEntries)
-                    //}
-                }
-                else if (isLoading) {
+                } else if isLoading {
                     LoadingView()
-                }
-                else {
+                } else {
                     Text("Error while loading weather")
                 }
-            }.onAppear {
-                Task { await loadWeatherForecast(location: locationManager.location!) }
             }
-            .toolbar{
-                Button(action: {
-                showWeatherSummary = true
-                }) {
-                    Text("Temperature Graph")
+            .onAppear {
+                Task {
+                    await loadWeatherForecast(location: locationManager.location!)
                 }
             }
+            .navigationBarHidden(true)
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showWeatherSummary) {
             WeatherSummaryView(forecastEntries: forecastEntries)
         }
-        //else if (locationManager.isLoading) {
-            //LoadingView()
-        //}
-        //else {
-            //Text("Error while loading location")
-        //}
+        
+        
     }
 }
 
