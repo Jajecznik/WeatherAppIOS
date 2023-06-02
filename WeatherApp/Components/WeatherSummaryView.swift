@@ -4,19 +4,25 @@ struct WeatherSummaryView: View {
     var forecastEntries: [ForecastEntry] // Array of forecast entries
     
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 30) {
             VStack {
                 Text("Max Temperature")
                     .font(.headline)
                     .padding(.bottom, 20)
-                BarChart(dataPoints: getChartData(for: \.maxTemp), barColor: .red)
+                ScrollView(.vertical) {
+                    BarChart(dataPoints: getChartData(for: \.maxTemp), barColor: .red)
+                }
+                .frame(height: 300)
             }
             
             VStack {
                 Text("Min Temperature")
                     .font(.headline)
                     .padding(.bottom, 20)
-                BarChart(dataPoints: getChartData(for: \.minTemp), barColor: .blue)
+                ScrollView(.vertical) {
+                    BarChart(dataPoints: getChartData(for: \.minTemp), barColor: .blue)
+                }
+                .frame(height: 300)
             }
         }
         .padding()
@@ -28,6 +34,7 @@ struct WeatherSummaryView: View {
         }
     }
 }
+
 
 struct ChartDataPoint: Identifiable {
     var id = UUID()
@@ -48,7 +55,8 @@ struct BarChart: View {
                         .foregroundColor(Color(hue: 0.333, saturation: 1, brightness: 1))
                     RoundedRectangle(cornerRadius: 8)
                         .fill(barColor)
-                        .frame(height: CGFloat(dataPoint.value) * 2)
+                        //.frame(height: CGFloat(dataPoint.value) * 2)
+                        .frame(height: 50)
                     Text("\(Int(dataPoint.value))")
                         .foregroundColor(.white)
                 }

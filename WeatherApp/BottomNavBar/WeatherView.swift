@@ -19,7 +19,6 @@ struct WeatherView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var viewModel: WeatherViewModel
     @EnvironmentObject var temperatureSettings: TemperatureSettings
-    //@StateObject var viewModel = WeatherViewModel()
     @State private var showAlert = false
     
     var body: some View {
@@ -43,7 +42,6 @@ struct WeatherView: View {
 
         let weatherCode = (sharedText.text == "no" ? weather.weather[0].main : viewModel.weather?.weather[0].main) ?? weather.weather[0].main
         let (weatherDescription, weatherIcon) = weatherDescriptions[weatherCode] ?? ("Nieznana", "questionmark")
-        //NavigationView{
             ScrollView{
                 ZStack(alignment: .leading) {
                     VStack {
@@ -100,11 +98,26 @@ struct WeatherView: View {
                                         .bold()
                                         .padding(.bottom)
                                         .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20))
+                                    
                                     Spacer()
+                                    
                                     Button(action: {
                                                toggleTemperatureUnit()
                                            }) {
-                                               Text("Change Temperature Unit")
+                                               Text("C / F")
+                                                   .padding()
+                                                   .foregroundColor(.white)
+                                                   .background(Color.blue)
+                                                   .cornerRadius(10)
+                                           }
+                                           .padding()
+                                    
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                               toggleTemperatureUnit()
+                                           }) {
+                                               Text("m/s / km/h")
                                                    .padding()
                                                    .foregroundColor(.white)
                                                    .background(Color.blue)

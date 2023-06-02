@@ -47,7 +47,6 @@ struct ContentView: View {
                     }
                     .accentColor(.white)
                     .background(Color(UIColor.systemBackground))
-                    //.tabViewStyle(PageTabViewStyle())
                 } else {
                     LoadingView()
                         .task {

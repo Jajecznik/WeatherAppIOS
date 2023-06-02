@@ -27,7 +27,6 @@ struct FavouriteView: View {
                     .fontWeight(.bold)
                     .padding(UIDevice.current.userInterfaceIdiom == .pad ? 80 : 20)
                 
-                
                 List {
                     ForEach(favouriteLocationManager.locations) { location in
                         
@@ -106,8 +105,6 @@ struct FavouriteView: View {
         .foregroundColor(Color(hue: 0.333, saturation: 1, brightness: 1))
     }
 
-    
-    
     func selectLocation(city: String) async {
         var cityName = city
         if cityName == "Łódź Voivodeship" {
@@ -134,8 +131,6 @@ struct FavouriteView: View {
         }
     }
 
-
-    
     func removeLocation(location: Location) {
         if let index = favouriteLocationManager.locations.firstIndex(where: { $0.id == location.id }) {
             favouriteLocationManager.locations.remove(at: index)

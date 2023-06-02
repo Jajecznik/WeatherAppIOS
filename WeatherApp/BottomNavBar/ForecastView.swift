@@ -16,7 +16,6 @@ struct ForecastView: View {
     @State private var showWeatherSummary = false
     @EnvironmentObject var temperatureSettings: TemperatureSettings
     
-    
     func loadWeatherForecast(location: CLLocationCoordinate2D) async {
     isLoading = true
         defer { isLoading = false }
@@ -91,8 +90,6 @@ struct ForecastView: View {
         .sheet(isPresented: $showWeatherSummary) {
             WeatherSummaryView(forecastEntries: forecastEntries)
         }
-        
-        
     }
     
     private func maxTemperature(_ temperature: Double) -> Double {
@@ -116,13 +113,13 @@ struct ForecastView: View {
     }
     
     private var temperatureUnitSymbol: String {
-            switch temperatureSettings.temperatureUnit {
-            case .celsius:
-                return "°C"
-            case .fahrenheit:
-                return "°F"
-            }
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return "°C"
+        case .fahrenheit:
+            return "°F"
         }
+    }
 }
 
 struct ForecastView_Previews: PreviewProvider {
@@ -130,4 +127,3 @@ struct ForecastView_Previews: PreviewProvider {
         ForecastView()
     }
 }
-
