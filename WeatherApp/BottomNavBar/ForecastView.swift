@@ -34,9 +34,11 @@ struct ForecastView: View {
             return []
         }
         return forecast.list.map { entry in
+            let maxTemp = maxTemperature(entry.main.temp_max)
+            let minTemp = minTemperature(entry.main.temp_min)
             return ForecastEntry(weekday: entry.weekday,
-                                 maxTemp: entry.main.temp_max,
-                                 minTemp: entry.main.temp_min)
+                                 maxTemp: maxTemp,
+                                 minTemp: minTemp)
         }
     }
     
@@ -71,7 +73,7 @@ struct ForecastView: View {
                 .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
                 
                 if forecast != nil && !isLoading {
-                    ForecastListView(forecast: forecast!)
+                    ForecastListView(forecast: forecast!).environmentObject(temperatureSettings)
                 } else if isLoading {
                     LoadingView()
                 } else {
@@ -92,6 +94,35 @@ struct ForecastView: View {
         
         
     }
+    
+    private func maxTemperature(_ temperature: Double) -> Double {
+        let convertedTemperature = convertTemperature(temperature)
+        return convertedTemperature
+    }
+
+    private func minTemperature(_ temperature: Double) -> Double {
+        let convertedTemperature = convertTemperature(temperature)
+        return convertedTemperature
+    }
+    
+    private func convertTemperature(_ temperature: Double) -> Double {
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return temperature.rounded()
+        case .fahrenheit:
+            let convertedTemperature = (temperature * 9/5) + 32
+            return convertedTemperature.rounded()
+        }
+    }
+    
+    private var temperatureUnitSymbol: String {
+            switch temperatureSettings.temperatureUnit {
+            case .celsius:
+                return "°C"
+            case .fahrenheit:
+                return "°F"
+            }
+        }
 }
 
 struct ForecastView_Previews: PreviewProvider {
