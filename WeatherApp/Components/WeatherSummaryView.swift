@@ -7,6 +7,7 @@ struct WeatherSummaryView: View {
         VStack(spacing: 30) {
             VStack {
                 Text("Max Temperature")
+                    .font(.system(size: 24))
                     .font(.headline)
                     .padding(.bottom, 20)
                 ScrollView(.vertical) {
@@ -17,6 +18,7 @@ struct WeatherSummaryView: View {
             
             VStack {
                 Text("Min Temperature")
+                    .font(.system(size: 24))
                     .font(.headline)
                     .padding(.bottom, 20)
                 ScrollView(.vertical) {

@@ -3,6 +3,7 @@ import SwiftUI
 struct ForecastDetailView: View {
     var element: ForecastListElement
     @EnvironmentObject var temperatureSettings: TemperatureSettings
+    @EnvironmentObject var speedSettings: SpeedSettings
     
     var body: some View {
         
@@ -50,7 +51,7 @@ struct ForecastDetailView: View {
                 WeatherRow(logo: "thermometer", name: "Max temp", value: maxTemperature)
             }
             HStack {
-                WeatherRow(logo: "wind", name: "Wind speed", value: (element.wind.speed.roundDouble() + " m/s"))
+                WeatherRow(logo: "wind", name: "Wind speed", value: windSpeed)
                 Spacer()
                 WeatherRow(logo: "humidity", name: "Humidity", value: "\(element.main.humidity.roundDouble())%")
             }
@@ -73,6 +74,31 @@ struct ForecastDetailView: View {
         .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? 80 : 0)
         .navigationBarTitle("More Details")
         Spacer()
+    }
+    
+    private var windSpeed: String {
+        let speed = element.wind.speed
+        let convertedSpeed = convertSpeed(speed)
+        return "\(convertedSpeed) \(speedUnitSymbol)"
+    }
+    
+    private func convertSpeed(_ speed: Double) -> String {
+        switch speedSettings.speedUnit {
+        case .meters:
+            return "\(speed.roundDouble())"
+        case .kilometers:
+            let convertedSpeed = speed * 3.6
+            return "\(convertedSpeed.roundDouble())"
+        }
+    }
+    
+    private var speedUnitSymbol: String {
+        switch speedSettings.speedUnit {
+        case .meters:
+            return "m/s"
+        case .kilometers:
+            return "km/h"
+        }
     }
     
     private var currentTemperature: String {
@@ -110,11 +136,11 @@ struct ForecastDetailView: View {
     }
     
     private var temperatureUnitSymbol: String {
-            switch temperatureSettings.temperatureUnit {
-            case .celsius:
-                return "°C"
-            case .fahrenheit:
-                return "°F"
-            }
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return "°C"
+        case .fahrenheit:
+            return "°F"
         }
+    }
 }

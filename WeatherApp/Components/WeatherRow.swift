@@ -33,8 +33,6 @@ struct WeatherRow: View {
             Spacer()
                 .frame(width: UIDevice.current.userInterfaceIdiom == .pad ? 80 : 0, height: UIDevice.current.userInterfaceIdiom == .pad ? 80 : 0)
         }
-
-
     }
 }
 

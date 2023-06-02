@@ -15,6 +15,7 @@ struct ContentView: View {
     @StateObject private var sharedText = SharedText()
     @StateObject private var weatherViewModel = WeatherViewModel()
     @StateObject var temperatureSettings = TemperatureSettings()
+    @StateObject var speedSettings = SpeedSettings()
 
     var body: some View {
         VStack {
@@ -23,6 +24,7 @@ struct ContentView: View {
                     TabView(selection: $selection) {
                         ForecastView()
                             .environmentObject(temperatureSettings)
+                            .environmentObject(speedSettings)
                             .tabItem {
                                 Label("Forecast", systemImage: "calendar")
                             }
@@ -33,6 +35,7 @@ struct ContentView: View {
                             .environmentObject(locationManager)
                             .environmentObject(weatherViewModel)
                             .environmentObject(temperatureSettings)
+                            .environmentObject(speedSettings)
                             .tabItem {
                                 Label("Weather", systemImage: "sun.max")
                             }

@@ -4,6 +4,7 @@ struct ForecastRow: View {
     var element: ForecastListElement
     var weekdayFormatter = WeekdayFormatter()
     @EnvironmentObject var temperatureSettings: TemperatureSettings
+    @EnvironmentObject var speedSettings: SpeedSettings
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -61,11 +62,11 @@ struct ForecastRow: View {
     }
     
     private var temperatureUnitSymbol: String {
-            switch temperatureSettings.temperatureUnit {
-            case .celsius:
-                return "°C"
-            case .fahrenheit:
-                return "°F"
-            }
+        switch temperatureSettings.temperatureUnit {
+        case .celsius:
+            return "°C"
+        case .fahrenheit:
+            return "°F"
         }
+    }
 }

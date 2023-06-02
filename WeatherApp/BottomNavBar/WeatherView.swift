@@ -19,6 +19,7 @@ struct WeatherView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var viewModel: WeatherViewModel
     @EnvironmentObject var temperatureSettings: TemperatureSettings
+    @EnvironmentObject var speedSettings: SpeedSettings
     @State private var showAlert = false
     
     var body: some View {
@@ -94,10 +95,16 @@ struct WeatherView: View {
                             
                             VStack(alignment: .leading, spacing: 20) {
                                 HStack {
-                                    Text("Weather now")
-                                        .bold()
-                                        .padding(.bottom)
-                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20))
+                                    Button(action: {
+                                               toggleTemperatureUnit()
+                                           }) {
+                                               Text("C / F")
+                                                   .padding()
+                                                   .foregroundColor(.white)
+                                                   .background(Color.blue)
+                                                   .cornerRadius(10)
+                                           }
+                                           .padding()
                                     
                                     Spacer()
                                     
@@ -115,7 +122,7 @@ struct WeatherView: View {
                                     Spacer()
                                     
                                     Button(action: {
-                                               toggleTemperatureUnit()
+                                               toggleSpeedUnit()
                                            }) {
                                                Text("m/s / km/h")
                                                    .padding()
@@ -143,12 +150,12 @@ struct WeatherView: View {
                                 HStack {
                                     if(sharedText.text == "no")
                                     {
-                                        WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
+                                        WeatherRow(logo: "wind", name: "Wind speed", value: windSpeed)
                                         Spacer()
                                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
                                     }
                                     else {
-                                        WeatherRow(logo: "wind", name: "Wind speed", value: "\(viewModel.weather?.wind.speed.roundDouble() ?? "0") m/s")
+                                        WeatherRow(logo: "wind", name: "Wind speed", value: windSpeed)
                                         Spacer()
                                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(viewModel.weather?.main.humidity.roundDouble() ?? "0")%")
                                     }
@@ -285,6 +292,21 @@ struct WeatherView: View {
             }
         }
     
+    private var speedUnitSymbol: String {
+            switch speedSettings.speedUnit {
+            case .meters:
+                return "m/s"
+            case .kilometers:
+                return "km/h"
+            }
+        }
+    
+    private var windSpeed: String {
+        let speed = (sharedText.text == "no" ? weather.wind.speed : viewModel.weather?.wind.speed) ?? weather.wind.speed
+        let convertedSpeed = convertSpeed(speed)
+        return "\(convertedSpeed) \(speedUnitSymbol)"
+    }
+    
     private var temperatureUnitSymbol: String {
             switch temperatureSettings.temperatureUnit {
             case .celsius:
@@ -293,6 +315,24 @@ struct WeatherView: View {
                 return "°F"
             }
         }
+    
+    private func convertSpeed(_ speed: Double) -> String {
+        switch speedSettings.speedUnit {
+        case .meters:
+            return "\(speed.roundDouble())"
+        case .kilometers:
+            let convertedSpeed = speed * 3.6
+            return "\(convertedSpeed.roundDouble())"
+        }
+    }
+
+func toggleSpeedUnit() {
+        if speedSettings.speedUnit == .meters {
+            speedSettings.speedUnit = .kilometers
+        } else {
+            speedSettings.speedUnit = .meters
+        }
+    }
     
         private var currentTemperature: String {
             let temperature = (sharedText.text == "no" ? weather.main.temp : viewModel.weather?.main.temp) ?? weather.main.temp

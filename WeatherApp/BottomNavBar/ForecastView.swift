@@ -15,6 +15,7 @@ struct ForecastView: View {
     @State var isLoading = true;
     @State private var showWeatherSummary = false
     @EnvironmentObject var temperatureSettings: TemperatureSettings
+    @EnvironmentObject var speedSettings: SpeedSettings
     
     func loadWeatherForecast(location: CLLocationCoordinate2D) async {
     isLoading = true
@@ -72,7 +73,7 @@ struct ForecastView: View {
                 .frame(maxHeight: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 80, alignment: .leading)
                 
                 if forecast != nil && !isLoading {
-                    ForecastListView(forecast: forecast!).environmentObject(temperatureSettings)
+                    ForecastListView(forecast: forecast!).environmentObject(temperatureSettings).environmentObject(speedSettings)
                 } else if isLoading {
                     LoadingView()
                 } else {
